@@ -32,11 +32,11 @@ const getSingleByIdFromDB = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
-const updateIntoDB = catchAsync(async (req: Request, res: Response) => {
+const updateIntoDB = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {
 
-    const { id } = req.params;
+    const user = req.user;
 
-    const result = await PatientService.updateIntoDB(id, req.body);
+    const result = await PatientService.updateIntoDB(user as IJWTPayload, req.body);
 
     sendResponse(res, {
         statusCode: 200,
@@ -45,11 +45,11 @@ const updateIntoDB = catchAsync(async (req: Request, res: Response) => {
         data: result
     })
 })
-const deletePatientFromDB = catchAsync(async (req: Request, res: Response) => {
+const softDelete  = catchAsync(async (req: Request, res: Response) => {
 
     const { id } = req.params;
 
-    const result = await PatientService.deletePatientFromDB(id);
+    const result = await PatientService.softDelete(id);
 
     sendResponse(res, {
         statusCode: 200,
@@ -64,5 +64,5 @@ export const PatientController = {
     getAllFromDB,
     getSingleByIdFromDB,
     updateIntoDB,
-    deletePatientFromDB
+    softDelete 
 }
