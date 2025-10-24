@@ -14,6 +14,21 @@ export default {
     },
     openRouterApiKey: process.env.OPENROUTER_API_KEY,
     stripeSecretKey:process.env.STRIPE_SECRET_KEY,
-    stripeWebhookSecret:process.env.STRIPE_WEBHOOK_SECRET
+    stripeWebhookSecret:process.env.STRIPE_WEBHOOK_SECRET,
+
+    jwt: {
+        jwt_secret: process.env.JWT_SECRET,
+        reset_pass_secret: process.env.RESET_PASS_TOKEN,
+        // refresh_secret: process.env.JWT_REFRESH_SECRET,
+        refresh_token_secret: process.env.JWT_REFRESH_SECRET,
+        expires_in: process.env.JWT_EXPIRES_IN,
+        reset_pass_token_expires_in: process.env.RESET_PASS_TOKEN_EXPIRES_IN,
+    },
+    emailSender:{
+        email:process.env.SMTP_USER,
+        app_pass:process.env.SMTP_PASS,
+    },
+    reset_pass_link: process.env.RESET_PASS_LINK,
+    salt_round: process.env.SALT_ROUND
 
 }
