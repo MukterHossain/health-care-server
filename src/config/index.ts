@@ -18,10 +18,10 @@ export default {
 
     jwt: {
         jwt_secret: process.env.JWT_SECRET,
-        reset_pass_secret: process.env.RESET_PASS_TOKEN,
-        // refresh_secret: process.env.JWT_REFRESH_SECRET,
-        refresh_token_secret: process.env.JWT_REFRESH_SECRET,
         expires_in: process.env.JWT_EXPIRES_IN,
+        refresh_token_secret: process.env.REFRESH_TOKEN_SECRET,
+        refresh_token_expires_in: process.env.REFRESH_TOKEN_EXPIRES_IN,
+        reset_pass_secret: process.env.RESET_PASS_SECRET,
         reset_pass_token_expires_in: process.env.RESET_PASS_TOKEN_EXPIRES_IN,
     },
     emailSender:{
