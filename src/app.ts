@@ -7,6 +7,7 @@ import cron from 'node-cron';
 import router from './app/routes';
 import cookieParser from 'cookie-parser';
 import { PaymentController } from './app/modules/payment/payment.controller';
+import { AppointmentService } from './app/modules/appointment/appointment.service';
 
 const app: Application = express();
 
@@ -16,6 +17,7 @@ app.post(
     express.raw({ type: "application/json" }),
     PaymentController.handleStripeWebhookEvent
 );
+
 
 app.use(cors({
     origin: 'http://localhost:3000',
@@ -29,14 +31,14 @@ app.use(cookieParser())
 
 
 
-// cron.schedule('* * * * *', () => {
-//     try {
-//         console.log("Node cron called at ", new Date())
-//         AppointmentService.cancelUnpaidAppointments();
-//     } catch (err) {
-//         console.error(err);
-//     }
-// });
+cron.schedule('* * * * *', () => {
+    try {
+        console.log("Node cron called at ", new Date())
+        AppointmentService.cancelUnpaidAppointments();
+    } catch (err) {
+        console.error(err);
+    }
+});
 
 app.use("/api/v1", router)
 
