@@ -1,8 +1,6 @@
 
-export type IPatientUpdateInput = {
-    email: string;
-    name: string;
-    address: string;
-    
-    
-}
+export type IPatientFilterRequest = {
+    searchTerm?: string | undefined;
+    email?: string | undefined;
+    contactNo?: string | undefined;
+};

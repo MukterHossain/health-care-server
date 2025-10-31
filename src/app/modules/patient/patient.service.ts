@@ -1,13 +1,14 @@
 import { Doctor, Patient, Prisma, UserStatus } from "@prisma/client";
 import { IOptions, paginationHelper } from "../../helper/paginationHelper";
 import { prisma } from "../../shared/prisma";
-import { IPatientUpdateInput } from "./patient.interface";
+
 import { patientSearchableFields } from "./patient.constant";
 import { IJWTPayload } from "../../types/common";
+import { IPatientFilterRequest } from "./patient.interface";
 
 
-const getAllFromDB = async (filters: any, options: IOptions) => {
-    const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
+const getAllFromDB = async (filters: IPatientFilterRequest, options: IOptions) => {
+    const { page, limit, skip} = paginationHelper.calculatePagination(options);
     const { searchTerm,  ...filterData } = filters;
 
     const andConditions = [];
