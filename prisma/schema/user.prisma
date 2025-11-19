@@ -35,7 +35,7 @@ model Doctor {
     email               String   @unique
     profilePhoto        String?
     contactNumber       String
-    address             String
+    address             String?
     registrationNumber  String
     experience          Int      @default(0)
     gender              Gender
@@ -51,22 +51,23 @@ model Doctor {
     user              User                @relation(fields: [email], references: [email])
     doctorSchedules   DoctorSchedules[]
     doctorSpecialties DoctorSpecialties[]
-    appointments      Appointment[]
-    prescriptions     Prescription[]
-    reviews           Review[]
+    appointment       Appointment[]
+    prescription      Prescription[]
+    review            Review[]
 
     @@map("doctors")
 }
 
 model Patient {
-    id           String   @id @default(uuid())
-    email        String   @unique
-    name         String
-    profilePhoto String?
-    address      String?
-    isDeleted    Boolean  @default(false)
-    createdAt    DateTime @default(now())
-    updatedAt    DateTime @updatedAt
+    id            String   @id @default(uuid())
+    email         String   @unique
+    name          String
+    profilePhoto  String?
+    contactNumber String?
+    address       String?
+    isDeleted     Boolean  @default(false)
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
 
     user User @relation(fields: [email], references: [email])
 

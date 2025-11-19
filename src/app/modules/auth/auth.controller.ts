@@ -93,9 +93,9 @@ const resetPassword = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-const getMe = catchAsync(async (req: Request, res: Response) => {
-    const userSession = req.cookies;
-    const result = await AuthService.getMe(userSession);
+const getMe = catchAsync(async (req: Request & { user?: any }, res: Response) => {
+    const user = req.cookies;
+    const result = await AuthService.getMe(user);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,

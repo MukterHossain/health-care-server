@@ -1,3 +1,3 @@
-export const patientFilterableFields = ["email", "contactNumber", "gender", "appointmentFee", "specialties", "searchTerm"]
+export const patientFilterableFields: string[] = ["email", "contactNumber", "searchTerm"]
 
-export const patientSearchableFields = ["name", "email", "contactNumber"]
+export const patientSearchableFields: string[] = ["name", "email", "contactNumber"]

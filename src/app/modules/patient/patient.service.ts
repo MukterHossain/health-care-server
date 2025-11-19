@@ -1,15 +1,16 @@
 import { Doctor, Patient, Prisma, UserStatus } from "@prisma/client";
-import { IOptions, paginationHelper } from "../../helper/paginationHelper";
+import { paginationHelper } from "../../helper/paginationHelper";
 import { prisma } from "../../shared/prisma";
 
 import { patientSearchableFields } from "./patient.constant";
 import { IJWTPayload } from "../../types/common";
 import { IPatientFilterRequest } from "./patient.interface";
+import { IPaginationOptions } from "../../interface/pagination";
 
 
-const getAllFromDB = async (filters: IPatientFilterRequest, options: IOptions) => {
-    const { page, limit, skip} = paginationHelper.calculatePagination(options);
-    const { searchTerm,  ...filterData } = filters;
+const getAllFromDB = async (filters: IPatientFilterRequest, options: IPaginationOptions, includeHealthData: boolean = false) => {
+    const { page, limit, skip } = paginationHelper.calculatePagination(options);
+    const { searchTerm, ...filterData } = filters;
 
     const andConditions = [];
 
@@ -26,11 +27,20 @@ const getAllFromDB = async (filters: IPatientFilterRequest, options: IOptions) =
 
 
     if (Object.keys(filterData).length > 0) {
-        const filterConditions = Object.keys(filterData).map((key) => ({
-            [key]: {
-                equals: (filterData as any)[key]
-            }
-        }))
+        andConditions.push({
+            AND: Object.keys(filterData).map((key) => {
+                return {
+                    [key]: {
+                        equals: (filterData as any)[key],
+                    },
+                };
+            }),
+        });
+        // const filterConditions = Object.keys(filterData).map((key) => ({
+        //     [key]: {
+        //         equals: (filterData as any)[key]
+        //     }
+        // }))
 
         // andConditions.push(...filterConditions)
         andConditions.push({
@@ -44,14 +54,14 @@ const getAllFromDB = async (filters: IPatientFilterRequest, options: IOptions) =
         where: whereConditions,
         skip,
         take: limit,
-        orderBy: 
+        orderBy:
             // [sortBy]: sortOrder
             options.sortBy && options.sortOrder
                 ? { [options.sortBy]: options.sortOrder }
                 : {
                     createdAt: 'desc',
                 }
-        
+
     });
 
     const total = await prisma.patient.count({
@@ -79,49 +89,49 @@ const getSingleByIdFromDB = async (id: string) => {
 
 
 }
-const updateIntoDB = async (user:IJWTPayload, payload: any) => {
-     const { medicalReport, patientHealthData, ...patientData } = payload;
+const updateIntoDB = async (user: IJWTPayload, payload: any) => {
+    const { medicalReport, patientHealthData, ...patientData } = payload;
     const patientInfo = await prisma.patient.findUniqueOrThrow({
         where: {
-            email:user.email,
-            isDeleted:false
+            email: user.email,
+            isDeleted: false
         }
     });
 
-    return await prisma.$transaction(async(tnx) =>{
+    return await prisma.$transaction(async (tnx) => {
         await tnx.patient.update({
-            where:{
-                id:patientInfo.id
+            where: {
+                id: patientInfo.id
             },
-            data:patientData
+            data: patientData
         })
-        if(patientHealthData){
+        if (patientHealthData) {
             await tnx.patientHealthData.upsert({
                 where: {
-                    patientId:patientInfo.id
+                    patientId: patientInfo.id
                 },
                 update: patientHealthData,
                 create: {
                     ...patientHealthData,
-                    patientId:patientInfo.id
+                    patientId: patientInfo.id
                 }
             })
         }
-        if(medicalReport){
+        if (medicalReport) {
             await tnx.medicalReport.create({
                 data: {
                     ...medicalReport,
-                    patientId:patientInfo.id
+                    patientId: patientInfo.id
                 }
             })
         }
         const result = await tnx.patient.findUnique({
-            where:{
-                id:patientInfo.id
+            where: {
+                id: patientInfo.id
             },
-            include:{
-                patientHealthData:true,
-                medicalReport:true
+            include: {
+                patientHealthData: true,
+                medicalReport: true
             }
         })
 
@@ -156,5 +166,5 @@ export const PatientService = {
     getAllFromDB,
     getSingleByIdFromDB,
     updateIntoDB,
-    softDelete 
+    softDelete
 }
