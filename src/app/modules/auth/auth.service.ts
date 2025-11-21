@@ -1,13 +1,10 @@
-import { Request } from "express";
 import { prisma } from "../../shared/prisma";
 import bcrypt from "bcryptjs";
 import { UserStatus } from "@prisma/client";
 import { Secret } from "jsonwebtoken"
-// import { JwtHelper } from "../../helper/jwtHelper";
 import ApiError from "../../error/ApiError";
 import httpStatus from "http-status";
 import config from "../../../config";
-import { emit } from "process";
 import emailSender from "./emailSender";
 import { jwtHelper } from "../../helper/jwtHelper";
 
@@ -69,9 +66,17 @@ const refreshToken = async (token: string) => {
         config.jwt.jwt_secret as Secret,
         config.jwt.expires_in as string
     );
+     const refreshToken = jwtHelper.generateToken({
+        email: userData.email,
+        role: userData.role
+    },
+        config.jwt.refresh_token_secret as Secret,
+        config.jwt.refresh_token_expires_in as string
+    );
 
     return {
         accessToken,
+        refreshToken,
         needPasswordChange: userData.needPasswordChange
     };
 
@@ -166,7 +171,8 @@ const resetPassword = async (token: string, payload: { id: string, password: str
             id: payload.id
         },
         data: {
-            password
+            password,
+            needPasswordChange: false
         }
     })
 };
