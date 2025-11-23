@@ -98,31 +98,13 @@ const getAllFromDB = async (filters: IDoctorFilterRequest, options: IPaginationO
           rating: true,
         },
       },
+      doctorSchedules: {
+    include: {
+      schedule: true
+    }
+  }
     },
   });
-
-  // console.log(result[0].doctorSpecialties);
-    // const result = await prisma.doctor.findMany({
-    //     where: whereConditions,
-    //     skip,
-    //     take: limit,
-    //     orderBy: {
-    //         [sortBy]: sortOrder
-    //     },
-    //     include: {
-    //         doctorSpecialties: {
-    //             include: {
-    //                 specialities: true
-    //             }
-    //         },
-    //         reviews:{
-    //             select: {
-    //                 rating:true
-    //             }
-    //         }
-    //     }
-    // });
-
     const total = await prisma.doctor.count({
         where: whereConditions
     })
@@ -160,10 +142,8 @@ const getDoctorByIdFromDB = async (id: string) => {
 
     });
 
-    return {
-
-        data: result
-    }
+    return result
+    
 }
 
 const updateIntoDB = async (id: string, payload: IDoctorUpdate) => {

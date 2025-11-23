@@ -2,6 +2,8 @@ import express from "express";
 import { DoctorController } from "./doctor.controller";
 import auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
+import { DoctorValidation } from "./doctor.validation";
+import validateRequest from "../../middlewares/validateRequest";
 const router = express.Router();
 
 router.get(
@@ -20,6 +22,7 @@ router.post(
 router.patch(
     "/:id",
     auth(UserRole.ADMIN, UserRole.DOCTOR),
+    validateRequest(DoctorValidation.update),
     DoctorController.updateIntoDB
 )
 router.delete(

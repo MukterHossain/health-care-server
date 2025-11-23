@@ -155,8 +155,8 @@ const resetPassword = async (token: string, payload: { id: string, password: str
             status: UserStatus.ACTIVE
         }
     });
-
-    const isValidToken = jwtHelper.verifyToken(token, config.jwt.reset_pass_secret as Secret)
+    // console.log("token", token)
+    const isValidToken = jwtHelper.verifyToken(token, config.jwt.jwt_secret as Secret)
 
     if (!isValidToken) {
         throw new ApiError(httpStatus.FORBIDDEN, "Forbidden!")

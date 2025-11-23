@@ -5,6 +5,8 @@ import pick from "../../helper/pick";
 import { DoctorService } from "./doctor.service";
 import sendResponse from "../../shared/sendResponse";
 import { doctorFilterableFields } from "./doctor.constant";
+import httpStatus from 'http-status';
+
 
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
     const options = pick(req.query, ["page", "limit", "sortBy", "sortOrder"]);
@@ -13,7 +15,7 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
     const result = await DoctorService.getAllFromDB(fillters, options);
 
     sendResponse(res, {
-        statusCode: 200,
+        statusCode: httpStatus.OK,
         success: true,
         message: "Doctor fetched successfully!",
         meta: result.meta,
@@ -25,7 +27,7 @@ const getDoctorByIdFromDB = catchAsync(async (req: Request, res: Response) => {
     const result = await DoctorService.getDoctorByIdFromDB(id);
 
     sendResponse(res, {
-        statusCode: 200,
+        statusCode: httpStatus.OK,
         success: true,
         message: "Doctor fetched data by id successfully!",
         data: result
@@ -39,7 +41,7 @@ const updateIntoDB = catchAsync(async (req: Request, res: Response) => {
     const result = await DoctorService.updateIntoDB(id, req.body);
 
     sendResponse(res, {
-        statusCode: 200,
+        statusCode: httpStatus.OK,
         success: true,
         message: "Doctor updated successfully!",
         data: result
@@ -51,7 +53,7 @@ const deleteDoctorFromDB = catchAsync(async (req: Request, res: Response) => {
     const result = await DoctorService.deleteDoctorFromDB(req.params.id);
 
     sendResponse(res, {
-        statusCode: 200,
+        statusCode: httpStatus.OK,
         success: true,
         message: "Doctor deleted successfully!",
         data: null
@@ -59,16 +61,25 @@ const deleteDoctorFromDB = catchAsync(async (req: Request, res: Response) => {
 })
 const getAISuggestions = catchAsync(async (req: Request, res: Response) => {
 
+const { symptoms } = req.body;
 
-    const result = await DoctorService.getAISuggestions(req.body);
+  // Basic validation
+  if (!symptoms || typeof symptoms !== 'string' || symptoms.trim().length < 5) {
+    res.status(httpStatus.BAD_REQUEST).json({
+      success: false,
+      message: 'Please provide valid symptoms for doctor suggestion.',
+    });
+}
+    // const result = await DoctorService.getAISuggestions(req.body);
 
-    sendResponse(res, {
-        statusCode: 201,
-        success: true,
-        message: "Doctor AI suggestions successfully!",
-        data: result
-    })
-})
+    // sendResponse(res, {
+    //     statusCode: 201,
+    //     success: true,
+    //     message: "Doctor AI suggestions successfully!",
+    //     data: result
+    // })
+}
+)
 
 const softDelete = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;

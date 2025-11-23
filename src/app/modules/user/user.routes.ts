@@ -1,9 +1,10 @@
 import express, { NextFunction, Request, Response } from 'express'
 import { UserController } from './user.controller';
 import { fileUploader } from '../../helper/fileUploader';
-import { UserValidation } from './user.validation';
 import auth from '../../middlewares/auth';
 import { UserRole } from '@prisma/client';
+import { userValidation } from './user.validation';
+import validateRequest from '../../middlewares/validateRequest';
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ router.post(
     "/create-patient", 
     fileUploader.upload.single('file'),
     (req: Request, res: Response, next: NextFunction) => {
-        req.body = UserValidation.createPatientValidationSchema.parse(JSON.parse(req.body.data))
+        req.body = userValidation.createPatient.parse(JSON.parse(req.body.data))
     return UserController.createPatient(req, res, next)
     }
     )
@@ -31,7 +32,7 @@ router.post(
     auth(UserRole.ADMIN), 
     fileUploader.upload.single('file'),
     (req: Request, res: Response, next: NextFunction) => {
-        req.body = UserValidation.createAdminValidationSchema.parse(JSON.parse(req.body.data))
+        req.body = userValidation.createAdmin.parse(JSON.parse(req.body.data))
     return UserController.createAdmin(req, res, next)
     }
     )
@@ -42,7 +43,7 @@ router.post(
     auth(UserRole.ADMIN),
     fileUploader.upload.single('file'),
     (req: Request, res: Response, next: NextFunction) => {
-        req.body = UserValidation.createDoctorValidationSchema.parse(JSON.parse(req.body.data))
+        req.body = userValidation.createDoctor.parse(JSON.parse(req.body.data))
     return UserController.createDoctor(req, res, next)
     }
     )
@@ -52,6 +53,7 @@ router.post(
 router.patch(
     '/:id/status',
     auth(UserRole.ADMIN),
+    validateRequest(userValidation.updateStatus),
     UserController.changeProfileStatus
 );
 
