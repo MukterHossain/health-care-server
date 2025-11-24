@@ -4,6 +4,12 @@ import auth from '../../middlewares/auth';
 import { PrescriptionController } from './prescription.controller';
 const router = express.Router();
 
+
+router.get(
+    '/',
+    auth(UserRole.ADMIN),
+    PrescriptionController.getAllFromDB
+);
 router.get(
     '/my-prescription',
     auth(UserRole.PATIENT),

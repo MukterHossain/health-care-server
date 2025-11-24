@@ -6,10 +6,11 @@ import catchAsync from "../../shared/catchAsync";
 import sendResponse from "../../shared/sendResponse";
 import pick from "../../helper/pick";
 import { reviewFilterableFields } from "./review.constant";
+import { IAuthUser } from "../../interface/common";
 
-const insertIntoDB = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {
+const insertIntoDB = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response) => {
     const user = req.user;
-    const result = await ReviewService.insertIntoDB(user as IJWTPayload, req.body);
+    const result = await ReviewService.insertIntoDB( req.body, user as IAuthUser);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,

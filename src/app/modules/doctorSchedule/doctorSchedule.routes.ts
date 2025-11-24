@@ -25,7 +25,7 @@ router.get(
 
 router.post("/", 
     auth(UserRole.DOCTOR), 
-    validateRequest(DoctorScheduleValidation.createDoctorScheduleValidationSchema),
+     validateRequest(DoctorScheduleValidation.create),
     DoctorScheduleController.inserIntoDB)
 
 
