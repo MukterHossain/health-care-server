@@ -5,12 +5,13 @@ import httpStatus from 'http-status'
 import { IOptions, paginationHelper } from "../../helper/paginationHelper";
 import { Prisma } from "@prisma/client";
 import ApiError from "../../error/ApiError";
+import { IAuthUser } from "../../interface/common";
 
 
-const insertIntoDB = async (user: IJWTPayload, payload: any) => {
+const insertIntoDB = async (user: IAuthUser, payload: any) => {
     const patientData = await prisma.patient.findUniqueOrThrow({
         where: {
-            email: user.email
+            email: user?.email
         }
     });
 

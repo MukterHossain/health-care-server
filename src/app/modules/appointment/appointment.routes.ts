@@ -18,7 +18,7 @@ router.get(
 )
 
 router.get(
-    "/my-appointments",
+    "/my-appointment",
     auth(UserRole.PATIENT, UserRole.DOCTOR),
     AppointmentController.getMyAppointment
 )

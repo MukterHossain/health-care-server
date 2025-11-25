@@ -13,7 +13,7 @@ const createPrescription = async (user: IAuthUser, payload: Partial<Prescription
         where: {
             id: payload.appointmentId,
             status: AppointmentStatus.COMPLETED,
-            paymentStatus: PaymentStatus.PAID
+            // paymentStatus: PaymentStatus.PAID
         },
         include: {
             doctor: true

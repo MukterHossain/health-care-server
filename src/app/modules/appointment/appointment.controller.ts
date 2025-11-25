@@ -24,16 +24,18 @@ const createAppointment = catchAsync(async (req: Request & { user?: IAuthUser },
 })
 
 const getMyAppointment = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response) => {
-    const options = pick(req.query, ["page", "limit", "sortBy", "sortOrder"]);
-    const fillters = pick(req.query, ["status", "paymentStatus"])
-    const user = req.user;
-    const result = await AppointmentService.getMyAppointment(user as IAuthUser, fillters, options);
+       const user = req.user;
+    const filters = pick(req.query, ['status', 'paymentStatus']);
+    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+
+    const result = await AppointmentService.getMyAppointment(user as IAuthUser, filters, options);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "Appointment fetched successfully!",
-        data: result
+         message: 'My Appointment retrive successfully',
+        data: result.data,
+        meta: result.meta,
     })
 })
 const getAllAppointment = catchAsync(async (req: Request , res: Response) => {
